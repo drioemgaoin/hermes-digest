@@ -1,7 +1,7 @@
 ---
 name: daily-digest
-description: Researches three configured topics, returns 5 bullets per topic in a Telegram-friendly format. Use when running the morning digest or when explicitly asked for "today's digest".
-version: 1.0.0
+description: Research 3 topics, post 5 bullets each to Telegram. Triggered by morning cron or "today's digest" request.
+version: 1.2.0
 metadata:
   hermes:
     tags: [news, research, automation, digest]
@@ -10,103 +10,78 @@ metadata:
 
 # Daily Digest
 
-## When to Use
-
-Run this skill when:
-
-- The morning cron job fires (the prompt will say "run the daily-digest skill")
-- The user asks for "today's digest" or similar in any chat
-- The user asks to research the configured topics ad-hoc
-
 ## Topics
 
-Research these three topics. The "brief" describes what counts as
-relevant — be strict; reject filler.
+Research these three topics. Be strict — reject filler.
 
-### 1. EU AI Act updates
+### 1. AI tools & agentic workflows
 
-Most important developments in the past 7 days regarding the EU AI Act:
-enforcement actions, guidance documents, member-state implementation,
-court rulings, or significant industry compliance moves. Skip generic
-explainers and opinion pieces.
+Past 7 days: new AI dev tools, agentic frameworks, IDE integrations,
+AI coding assistants, prompt engineering techniques, and workflow
+automation releases. Prioritise shipped products and runnable code
+over opinion pieces. Note who released it and what's new.
 
-### 2. M&E contractor news (UK construction)
+### 2. Crypto (builder-focused)
 
-News from the past 7 days about Mechanical and Electrical contractors
-in the UK construction sector: major project wins, insolvencies, payment
-disputes, regulatory changes affecting M&E, and notable housing
-development tenders. Focus on commercial relevance to mid-size M&E firms
-(£5m–£50m turnover).
+Past 7 days: protocol launches, smart contract tooling, DeFi
+infrastructure, SDKs, developer platforms, L2 updates, and notable
+open-source releases. Skip price speculation and exchange drama.
+Focus on what matters to builders.
 
-### 3. Agentic AI launches
+### 3. Developer tooling & infrastructure
 
-New agentic AI products, frameworks, or significant research releases
-from the past 7 days. Prioritise things that ship code or runnable
-agents over thinkpieces. Note who released it and what's actually new.
+Past 7 days: new dev tools, language/runtime releases, CI/CD updates,
+cloud platform changes, open-source project milestones, and DX
+improvements. High signal for working developers.
 
 ## Procedure
 
-1. For each of the three topics in order:
-   a. Use the `web_search` tool to find recent items. Use 3–5 searches
-   per topic — vary the query so you find different angles, but
-   don't spelunk; this is a digest, not a research paper.
-   b. Pick the 5 most important items. Bias toward primary sources
-   (regulator, company, court) over commentary.
-   c. Write each item using the format below.
+For each topic in order:
 
-2. Assemble the full digest in this exact structure (Markdown, since
-   Telegram renders it):
+1. Run 3–4 `web_search` calls with varied phrasing. Examples:
+   - AI tools: `"AI dev tools released {month} {year}"`, `"agentic AI framework launch"`
+   - Crypto: `"crypto developer tools this week"`, `"DeFi protocol launch OR SDK"`
+   - Dev tooling: `"developer tools release this week"`, `"programming language update {year}"`
+2. From snippet text alone, pick the 5 most important items from the past 7 days. Drop anything older. Prefer primary sources over commentary.
+3. If <5 strong items after 4 searches, ship what you have. Label weak slots "thin coverage". Never invent items.
+
+Assemble the full digest in this exact format:
 
 ```
-   ☀️ *Hermes — <weekday> <DD Mon YYYY>*
+☀️ *Hermes — <weekday> <DD Mon YYYY>*
 
-   *EU AI Act updates*
+*AI tools & agentic workflows*
 
-   1. <One-sentence headline> — <Source name, date>
-      <One-sentence "so what" — why it matters>
-   2. ...
-   3. ...
-   4. ...
-   5. ...
+1. <Headline> — <Source, date>
+   <One blunt "so what" sentence>
+2. ...
+3. ...
+4. ...
+5. ...
 
-   *M&E contractor news (UK construction)*
+*Crypto (builder-focused)*
 
-   1. ...
-   ...
+1. ...
+...
 
-   *Agentic AI launches*
+*Developer tooling & infrastructure*
 
-   1. ...
-   ...
+1. ...
+...
 ```
 
-3. Deliver the digest to the home channel via the Telegram messaging
-   tool. Send it as a single message if possible; if it exceeds
-   4096 characters, split per-topic.
+Rules:
+- Each item under 280 characters. No URLs — source name + date only.
+- Ban slop: "significant development", "evolving landscape", "underscores the importance". Be blunt and specific.
+- Send to home channel via Telegram. Single message; split per-topic if >4096 chars.
 
-## Pitfalls
+## Checklist
 
-- **Generic AI-slop language.** Reject phrases like "this represents a
-  significant development", "in an evolving landscape", "underscores
-  the importance of". The "so what" lines must be blunt and specific
-  to the item.
-- **Missing the date filter.** If web_search returns items older than
-  7 days, drop them — even if they're high-quality. Recency is the
-  whole point of a daily digest.
-- **Padding.** If a topic genuinely has fewer than 5 strong items, use
-  the weakest slots for relevant context/background pieces and label
-  them as such. Don't invent items.
-- **URLs in bullets.** Don't include URLs in the bullet text — they
-  clutter Telegram. Source name + date is enough.
-- **Token blow-up.** Cap web_search at ~5 calls per topic. If you
-  haven't found 5 strong items in 5 searches, ship what you have.
+Verify before sending:
 
-## Verification
-
-The digest is correctly formed when:
-
-- It has exactly 3 topic sections, in the order above.
-- Each section has 5 numbered items.
-- Each item is under 280 characters total.
-- The header includes today's date.
-- It posted to the configured home channel without errors.
+- [ ] 3 topic sections in order above
+- [ ] 5 numbered items each (or labelled thin coverage)
+- [ ] Each item <280 chars
+- [ ] Today's date in header
+- [ ] No URLs in bullet text
+- [ ] Posted to home channel
