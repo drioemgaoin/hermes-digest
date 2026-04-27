@@ -1,0 +1,40 @@
+# Environment and secrets
+.env
+.env.*
+*.key
+
+# Hermes local state
+state.db
+memories/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+
+# Node (if using MCP servers)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+logs/
+
+# Docker
+docker-compose.override.yml
