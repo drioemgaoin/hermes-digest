@@ -38,3 +38,9 @@ logs/
 
 # Docker
 docker-compose.override.yml
+
+# Skip
+skip/
+*.skip*
+
+.claude
